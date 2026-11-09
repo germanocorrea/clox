@@ -28,6 +28,6 @@ void writeLineToEnconding(LinesEncoded *lines, int line, uint8_t byte) {
 }
 
 void freeLinesEncoded(LinesEncoded *lines) {
-    FREE_ARRAY(Line, lines, lines->count);
+    FREE_ARRAY(Line, lines->lines, lines->count);
     initLinesEncoded(lines);
 }
