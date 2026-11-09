@@ -14,8 +14,6 @@ typedef struct {
     int count;
     int capacity;
     uint8_t *code;
-    // keey both to compare them later
-    int *lines;
     LinesEncoded lines_encoded;
     ValueArray constants;
 } Chunk;

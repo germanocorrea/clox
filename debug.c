@@ -36,19 +36,10 @@ static int simpleInstruction(const char *name, int offset) {
 }
 
 int disassembleInstruction(Chunk *chunk, int offset) {
+    printf("%04d ", offset);
+
     int line = getLine(chunk, offset);
     int line_lb = getLine(chunk, offset - 1);
-
-    if (chunk->lines[offset] != line) {
-        printf("Line enconding is wrong at offset %d: old=%d new=%d\n", offset,
-               chunk->lines[offset], line);
-    }
-
-    if (line_lb >= 0 && chunk->lines[offset - 1] != line_lb) {
-        printf("Line enconding is wrong at offset %d: old=%d new=%d\n",
-               offset - 1, chunk->lines[offset], line);
-    }
-    printf("%04d ", offset);
 
     if (offset > 0 && line == line_lb) {
         printf("   | ");
