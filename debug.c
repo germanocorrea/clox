@@ -4,6 +4,16 @@
 #include "debug.h"
 #include "value.h"
 
+void disassembleLineEncoding(Chunk *chunk) {
+    printf("== Line Encoding ==\n");
+    printf("byte line times\n");
+    for (int i = 0; i < chunk->lines_encoded.count; i++) {
+        printf("%d ", chunk->lines_encoded.lines[i].code_first_idx);
+        printf("%d ", chunk->lines_encoded.lines[i].line);
+        printf("%d\n", chunk->lines_encoded.lines[i].times);
+    }
+}
+
 void disassembleChunk(Chunk *chunk, const char *name) {
     printf("== %s ==\n", name);
 
@@ -26,12 +36,24 @@ static int simpleInstruction(const char *name, int offset) {
 }
 
 int disassembleInstruction(Chunk *chunk, int offset) {
+    int line = getLine(chunk, offset);
+    int line_lb = getLine(chunk, offset - 1);
+
+    if (chunk->lines[offset] != line) {
+        printf("Line enconding is wrong at offset %d: old=%d new=%d\n", offset,
+               chunk->lines[offset], line);
+    }
+
+    if (line_lb >= 0 && chunk->lines[offset - 1] != line_lb) {
+        printf("Line enconding is wrong at offset %d: old=%d new=%d\n",
+               offset - 1, chunk->lines[offset], line);
+    }
     printf("%04d ", offset);
 
-    if (offset > 0 && chunk->lines[offset] == chunk->lines[offset - 1]) {
+    if (offset > 0 && line == line_lb) {
         printf("   | ");
     } else {
-        printf("%4d ", chunk->lines[offset]);
+        printf("%4d ", line);
     }
 
     uint8_t instruction = chunk->code[offset];
